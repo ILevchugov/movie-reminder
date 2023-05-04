@@ -6,6 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 @Slf4j
@@ -40,9 +42,19 @@ public class MovieTelegramBot extends TelegramLongPollingBot {
         try {
             log.info("received update {}", update.getMessage());
             log.info("received callback {}", update.getCallbackQuery());
-            execute(botUpdateHandler.handle(update));
+            var handleResult = botUpdateHandler.handle(update);
+            var forExecution = safeCast(handleResult, BotApiMethod.class);
+            if (forExecution != null) {
+                execute(forExecution);
+            } else {
+                execute(safeCast(handleResult, SendPhoto.class));
+            }
         } catch (Exception e) {
             log.error("error while process update", e);
         }
+    }
+
+    public static <T> T safeCast(Object o, Class<T> clazz) {
+        return clazz != null && clazz.isInstance(o) ? clazz.cast(o) : null;
     }
 }

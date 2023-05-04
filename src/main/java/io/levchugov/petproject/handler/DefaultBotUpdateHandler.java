@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
+import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.io.Serializable;
@@ -17,7 +18,7 @@ public class DefaultBotUpdateHandler implements BotUpdateHandler {
     private final CallbackHandler callbackHandler;
 
     @Override
-    public BotApiMethod<? extends Serializable> handle(Update update) {
+    public PartialBotApiMethod<? extends Serializable> handle(Update update) {
         log.info("start handling update {}", update);
 
         var message = update.getMessage();
