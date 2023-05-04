@@ -1,7 +1,6 @@
-package io.levchugov.petproject;
+package io.levchugov.petproject.message;
 
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
@@ -9,12 +8,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MessageFactory {
-    public static SendMessage greeting(Update update) {
+    public static SendMessage greeting(Long chatId) {
         var sendMessage = new SendMessage();
         sendMessage.setText(
                 "Hi, you can share with me any movie, which you want to want near future:)"
         );
-        sendMessage.setChatId(update.getMessage().getChatId());
+        sendMessage.setChatId(chatId);
 
         List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
         rowList.add(
@@ -32,12 +31,12 @@ public class MessageFactory {
         return sendMessage;
     }
 
-    public static SendMessage enterName(Update update) {
+    public static SendMessage enterName(Long chatId) {
         var sendMessage = new SendMessage();
         sendMessage.setText(
                 "text me title"
         );
-        sendMessage.setChatId(update.getCallbackQuery().getMessage().getChatId());
+        sendMessage.setChatId(chatId);
         return sendMessage;
     }
 

@@ -1,4 +1,4 @@
-package io.levchugov.petproject;
+package io.levchugov.petproject.config;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,11 +20,12 @@ public class BotInitializer {
 
     @EventListener({ContextRefreshedEvent.class})
     public void init() throws TelegramApiException {
+        log.info("init");
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
         try {
             telegramBotsApi.registerBot(movieTelegramBot);
         } catch (TelegramApiRequestException e) {
-            log.error(e.getMessage());
+            log.error(e.getMessage(), e);
         }
     }
 }
