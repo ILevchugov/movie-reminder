@@ -44,6 +44,9 @@ public class DefaultCallbackHandler implements CallbackHandler {
             AWAITS_TITLE.put(callback.getMessage().getChatId(), Boolean.FALSE);
             return MessageFactory.presentMovie(movie, callback.getMessage().getChatId());
         }
+        if (callback.getData().equals("cancel")) {
+            return MessageFactory.defaultMessage(callback.getMessage().getChatId());
+        }
         if (callback.getData().equals("confirm_movie")) {
             var movieId = MOVIES_AWAITS_CONFIRMATION.get(callback.getMessage().getChatId());
             if (movieId != null) {
@@ -84,7 +87,8 @@ public class DefaultCallbackHandler implements CallbackHandler {
                 try {
                     return MessageFactory.movieConfirmation(
                             callback.getMessage().getChatId(),
-                            movies.get(noCounter).image());
+                            movies.get(noCounter).image()
+                    );
                 } catch (Exception e) {
                     return MessageFactory.gotIt(callback.getMessage().getChatId());
                 }

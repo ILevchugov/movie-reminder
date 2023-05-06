@@ -19,28 +19,21 @@ public class MessageFactory {
     public static SendMessage greeting(Long chatId) {
         var sendMessage = new SendMessage();
         sendMessage.setText(
-                "Hi, you can share with me any movie, which you want to want near future:) +\n" +
+                "Hi, you can share with me any movie, which you want to watch near future:)\n" +
                         "Or roll if you've already have one)"
         );
         sendMessage.setChatId(chatId);
+        sendMessage.setReplyMarkup(buildAndAndRollButtons());
+        return sendMessage;
+    }
 
-        List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
-        rowList.add(
-                List.of(
-                        InlineKeyboardButton.builder()
-                                .text("Add")
-                                .callbackData("add_movie")
-                                .build(),
-                        InlineKeyboardButton.builder()
-                                .text("Roll")
-                                .callbackData("roll_movie")
-                                .build()
-                )
+    public static SendMessage defaultMessage(Long chatId) {
+        var sendMessage = new SendMessage();
+        sendMessage.setText(
+                "You can share ot roll:)"
         );
-        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
-        inlineKeyboardMarkup.setKeyboard(rowList);
-
-        sendMessage.setReplyMarkup(inlineKeyboardMarkup);
+        sendMessage.setChatId(chatId);
+        sendMessage.setReplyMarkup(buildAndAndRollButtons());
         return sendMessage;
     }
 
@@ -58,23 +51,8 @@ public class MessageFactory {
         sendMessage.setText(
                 "Got it! You can add more movies, or roll"
         );
-        List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
-        rowList.add(
-                List.of(
-                        InlineKeyboardButton.builder()
-                                .text("Add")
-                                .callbackData("add_movie")
-                                .build(),
-                        InlineKeyboardButton.builder()
-                                .text("Roll")
-                                .callbackData("roll_movie")
-                                .build()
-                )
-        );
-        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
-        inlineKeyboardMarkup.setKeyboard(rowList);
         sendMessage.setChatId(chatId);
-        sendMessage.setReplyMarkup(inlineKeyboardMarkup);
+        sendMessage.setReplyMarkup(buildAndAndRollButtons());
         return sendMessage;
     }
 
@@ -102,6 +80,10 @@ public class MessageFactory {
                         InlineKeyboardButton.builder()
                                 .text("No")
                                 .callbackData("show_next_movie")
+                                .build(),
+                        InlineKeyboardButton.builder()
+                                .text("Cancel")
+                                .callbackData("cancel")
                                 .build()
                 )
         );
@@ -112,22 +94,7 @@ public class MessageFactory {
     }
 
     public static PartialBotApiMethod<Message> presentMovie(Movie movie, Long chatId) {
-        List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
-        rowList.add(
-                List.of(
-                        InlineKeyboardButton.builder()
-                                .text("Add")
-                                .callbackData("add_movie")
-                                .build(),
-                        InlineKeyboardButton.builder()
-                                .text("Roll")
-                                .callbackData("roll_movie")
-                                .build()
-                )
-        );
-        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
-        inlineKeyboardMarkup.setKeyboard(rowList);
-
+        var buttons = buildAndAndRollButtons();
         try {
             SendPhoto sendPhoto = new SendPhoto();
 
@@ -138,50 +105,32 @@ public class MessageFactory {
             sendPhoto.setPhoto(file);
             sendPhoto.setChatId(chatId);
             sendPhoto.setCaption("Tonight you will watch " + movie.title() + "!!!");
-            sendPhoto.setReplyMarkup(inlineKeyboardMarkup);
+            sendPhoto.setReplyMarkup(buttons);
             return sendPhoto;
         } catch (IOException e) {
             var sendMessage = new SendMessage();
             sendMessage.setText(
                     "Tonight you will watch" + " " + movie.title() + "!!!"
             );
-            sendMessage.setReplyMarkup(inlineKeyboardMarkup);
+            sendMessage.setReplyMarkup(buttons);
             sendMessage.setChatId(chatId);
             return sendMessage;
         }
     }
 
-    public static SendMessage prohibitedName(Long chatId, String text) {
-        var sendMessage = new SendMessage();
-        sendMessage.setText(
-                "Sorry but you can't add this movie" + " " + text + "!!!"
-        );
-        List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
-        rowList.add(
-                List.of(
-                        InlineKeyboardButton.builder()
-                                .text("Add")
-                                .callbackData("add_movie")
-                                .build(),
-                        InlineKeyboardButton.builder()
-                                .text("Roll")
-                                .callbackData("roll_movie")
-                                .build()
-                )
-        );
-        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
-        inlineKeyboardMarkup.setKeyboard(rowList);
-        sendMessage.setChatId(chatId);
-        sendMessage.setReplyMarkup(inlineKeyboardMarkup);
-
-        return sendMessage;
-    }
 
     public static SendMessage foundNothing(Long chatId, String text) {
         var sendMessage = new SendMessage();
         sendMessage.setText(
                 "Found nothing(" + " " + text + "!!!"
         );
+        sendMessage.setChatId(chatId);
+        sendMessage.setReplyMarkup(buildAndAndRollButtons());
+
+        return sendMessage;
+    }
+
+    private static InlineKeyboardMarkup buildAndAndRollButtons() {
         List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
         rowList.add(
                 List.of(
@@ -197,10 +146,7 @@ public class MessageFactory {
         );
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         inlineKeyboardMarkup.setKeyboard(rowList);
-        sendMessage.setChatId(chatId);
-        sendMessage.setReplyMarkup(inlineKeyboardMarkup);
-
-        return sendMessage;
+        return inlineKeyboardMarkup;
     }
 
 }
