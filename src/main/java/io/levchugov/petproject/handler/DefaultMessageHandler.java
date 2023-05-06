@@ -11,7 +11,6 @@ import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 
 import static io.levchugov.petproject.repository.InMemoryStorage.AWAITS_TITLE;
 import static io.levchugov.petproject.repository.InMemoryStorage.MOVIES_AWAITS_CONFIRMATION;
@@ -36,7 +35,6 @@ public class DefaultMessageHandler implements MessageHandler {
             var movies = response.results();
 
             log.info("found {} ", response);
-            log.info("after filter {}", movies);
             if (!movies.isEmpty()) {
                 var movie = movies.get(0);
                 var count = movieJdbcRepository.findById(movie.id());

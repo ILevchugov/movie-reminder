@@ -9,7 +9,6 @@ import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Random;
 
 import static io.levchugov.petproject.repository.InMemoryStorage.AWAITS_TITLE;
@@ -20,8 +19,7 @@ import static io.levchugov.petproject.repository.InMemoryStorage.RESPONSE_FROM_I
 @Component
 @RequiredArgsConstructor
 public class DefaultCallbackHandler implements CallbackHandler {
-    private final static Random random = new Random();
-
+    private static final Random random = new Random();
 
     private final MovieJdbcRepository movieJdbcRepository;
 
@@ -30,16 +28,18 @@ public class DefaultCallbackHandler implements CallbackHandler {
         if (callback.getData().equals("add_movie")) {
             AWAITS_TITLE.put(callback.getMessage().getChatId(), Boolean.TRUE);
             return MessageFactory.enterName(callback.getMessage().getChatId());
-
         }
         if (callback.getData().equals("roll_movie")) {
             var chatId = callback.getMessage().getChatId();
             var movies = movieJdbcRepository.findUsersListToWatchByChatId(chatId);
-
+            if (movies.isEmpty()) {
+                movieJdbcRepository.markAllMovieNotPicked(chatId);
+                movies = movieJdbcRepository.findUsersListToWatchByChatId(chatId);
+            }
             var movie = new Movie(null, "nothing", null, null);
             if (!movies.isEmpty()) {
                 movie = movies.get(random.nextInt(movies.size()));
-                movies.remove(movie);
+                movieJdbcRepository.markMoviePicked(chatId, movie.id());
             }
             AWAITS_TITLE.put(callback.getMessage().getChatId(), Boolean.FALSE);
             return MessageFactory.presentMovie(movie, callback.getMessage().getChatId());

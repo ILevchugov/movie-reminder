@@ -65,7 +65,8 @@ public class MovieJdbcRepository {
     public List<Movie> findUsersListToWatchByChatId(Long chatId) {
         String query = "select * from movies " +
                 "left join chat_movie_list on movies.id = chat_movie_list.movie_id" +
-                " where chat_movie_list.chat_id = ?";
+                " where chat_movie_list.chat_id = ?" +
+                " and chat_movie_list.recently_picked = false";
 
         return jdbcOperations.query(
                 query,
@@ -77,6 +78,29 @@ public class MovieJdbcRepository {
                                 rs.getString("image"),
                                 rs.getString("description")
                         )
+        );
+    }
+
+    public void markMoviePicked(Long chatId, String movieId) {
+        String markMociePicked = "update chat_movie_list" +
+                " set recently_picked = true" +
+                " where chat_movie_list.chat_id = ?" +
+                " and chat_movie_list.movie_id = ?";
+
+        jdbcOperations.update(
+                markMociePicked,
+                chatId, movieId
+        );
+    }
+
+    public void markAllMovieNotPicked(Long chatId) {
+        String markMociePicked = "update chat_movie_list" +
+                " set recently_picked = false" +
+                " where chat_movie_list.chat_id = ?";
+
+        jdbcOperations.update(
+                markMociePicked,
+                chatId
         );
     }
 }
