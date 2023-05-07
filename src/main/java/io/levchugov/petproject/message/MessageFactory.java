@@ -23,7 +23,7 @@ public class MessageFactory {
         var sendMessage = new SendMessage();
         sendMessage.setText(
                 "Hi, you can share with me any movie, which you want to watch near future:)\n" +
-                        "Or roll if you've already have one)"
+                        "Or I'll pick it randomly if you already have the list)"
         );
         sendMessage.setChatId(chatId);
         sendMessage.setReplyMarkup(buildAndAndRollButtons());
@@ -33,7 +33,7 @@ public class MessageFactory {
     public static SendMessage defaultMessage(Long chatId) {
         var sendMessage = new SendMessage();
         sendMessage.setText(
-                "You can share ot roll:)"
+                "You can share or pick:)"
         );
         sendMessage.setChatId(chatId);
         sendMessage.setReplyMarkup(buildAndAndRollButtons());
@@ -43,7 +43,7 @@ public class MessageFactory {
     public static SendMessage enterName(Long chatId) {
         var sendMessage = new SendMessage();
         sendMessage.setText(
-                "text me title"
+                "Text me the movie title"
         );
         sendMessage.setChatId(chatId);
         return sendMessage;
@@ -52,7 +52,7 @@ public class MessageFactory {
     public static SendMessage gotIt(Long chatId) {
         var sendMessage = new SendMessage();
         sendMessage.setText(
-                "Got it! You can add more movies, or roll"
+                "Got it! You can add more movies, or pick!"
         );
         sendMessage.setChatId(chatId);
         sendMessage.setReplyMarkup(buildAndAndRollButtons());
@@ -73,7 +73,7 @@ public class MessageFactory {
         file.setMedia(in, "movie_pic.jpg");
         sendPhoto.setPhoto(file);
         sendPhoto.setChatId(chatId);
-        sendPhoto.setCaption("correct?");
+        sendPhoto.setCaption("Correct?");
         List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
         rowList.add(
                 List.of(
@@ -152,7 +152,7 @@ public class MessageFactory {
                                 .callbackData("add_movie")
                                 .build(),
                         InlineKeyboardButton.builder()
-                                .text("Roll")
+                                .text("Pick")
                                 .callbackData("roll_movie")
                                 .build()
                 )
@@ -186,7 +186,7 @@ public class MessageFactory {
                                 .callbackData("add_movie")
                                 .build(),
                         InlineKeyboardButton.builder()
-                                .text("Roll")
+                                .text("Pick")
                                 .callbackData("roll_movie")
                                 .build()
                 )
