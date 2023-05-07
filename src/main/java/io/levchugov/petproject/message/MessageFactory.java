@@ -1,6 +1,8 @@
 package io.levchugov.petproject.message;
 
+import io.levchugov.petproject.client.model.imdb.SearchMovieResult;
 import io.levchugov.petproject.model.Movie;
+import lombok.experimental.UtilityClass;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
@@ -15,6 +17,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+@UtilityClass
 public class MessageFactory {
     public static SendMessage greeting(Long chatId) {
         var sendMessage = new SendMessage();
@@ -58,11 +61,12 @@ public class MessageFactory {
 
     public static SendPhoto movieConfirmation(
             Long chatId,
-            String url
+            SearchMovieResult movie,
+            Integer counter
     ) throws IOException {
         SendPhoto sendPhoto = new SendPhoto();
 
-        URL u = new URL(url);
+        URL u = new URL(movie.image());
         InputStream in = u.openStream();
 
         var file = new InputFile();
@@ -75,11 +79,11 @@ public class MessageFactory {
                 List.of(
                         InlineKeyboardButton.builder()
                                 .text("Yes")
-                                .callbackData("confirm_movie")
+                                .callbackData("confirm_movie_" + movie.id())
                                 .build(),
                         InlineKeyboardButton.builder()
                                 .text("No")
-                                .callbackData("show_next_movie")
+                                .callbackData("show_next_movie_" + counter)
                                 .build(),
                         InlineKeyboardButton.builder()
                                 .text("Cancel")
@@ -94,7 +98,16 @@ public class MessageFactory {
     }
 
     public static PartialBotApiMethod<Message> presentMovie(Movie movie, Long chatId) {
-        var buttons = buildAndAndRollButtons();
+        var buttons = buildAndAndRollAndWatchedButtons(movie);
+        if ("nothing".equals(movie.title()) || movie.title() == null) {
+            var sendMessage = new SendMessage();
+            sendMessage.setText(
+                    "Tonight you will watch" + " " + movie.title() + "!!!"
+            );
+            sendMessage.setReplyMarkup(buildAddButton());
+            sendMessage.setChatId(chatId);
+            return sendMessage;
+        }
         try {
             SendPhoto sendPhoto = new SendPhoto();
 
@@ -149,4 +162,43 @@ public class MessageFactory {
         return inlineKeyboardMarkup;
     }
 
+    private static InlineKeyboardMarkup buildAddButton() {
+        List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
+        rowList.add(
+                List.of(
+                        InlineKeyboardButton.builder()
+                                .text("Add")
+                                .callbackData("add_movie")
+                                .build()
+                )
+        );
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        inlineKeyboardMarkup.setKeyboard(rowList);
+        return inlineKeyboardMarkup;
+    }
+
+    private static InlineKeyboardMarkup buildAndAndRollAndWatchedButtons(Movie movie) {
+        List<List<InlineKeyboardButton>> rowList = new ArrayList<>();
+        rowList.add(
+                List.of(
+                        InlineKeyboardButton.builder()
+                                .text("Add")
+                                .callbackData("add_movie")
+                                .build(),
+                        InlineKeyboardButton.builder()
+                                .text("Roll")
+                                .callbackData("roll_movie")
+                                .build()
+                )
+        );
+        rowList.add(List.of(
+                InlineKeyboardButton.builder()
+                        .text("Watched")
+                        .callbackData("watched_movie_" + movie.id())
+                        .build()
+        ));
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        inlineKeyboardMarkup.setKeyboard(rowList);
+        return inlineKeyboardMarkup;
+    }
 }

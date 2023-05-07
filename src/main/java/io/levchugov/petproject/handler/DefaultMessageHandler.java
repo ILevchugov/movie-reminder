@@ -13,8 +13,6 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import java.io.Serializable;
 
 import static io.levchugov.petproject.repository.InMemoryStorage.AWAITS_TITLE;
-import static io.levchugov.petproject.repository.InMemoryStorage.MOVIES_AWAITS_CONFIRMATION;
-import static io.levchugov.petproject.repository.InMemoryStorage.NO_COUNTER;
 import static io.levchugov.petproject.repository.InMemoryStorage.RESPONSE_FROM_IMDB;
 
 @Slf4j
@@ -30,8 +28,6 @@ public class DefaultMessageHandler implements MessageHandler {
         if (AWAITS_TITLE.get(message.getChatId()) != null && AWAITS_TITLE.get(message.getChatId())) {
             var response = imdbApiClient.findMovie(message.getText());
             RESPONSE_FROM_IMDB.put(message.getChatId(), response.results());
-            NO_COUNTER.put(message.getChatId(), 0);
-
             var movies = response.results();
 
             log.info("found {} ", response);
@@ -49,14 +45,13 @@ public class DefaultMessageHandler implements MessageHandler {
                     );
                 }
                 AWAITS_TITLE.put(message.getChatId(), Boolean.FALSE);
-                MOVIES_AWAITS_CONFIRMATION.put(
-                        message.getChatId(),
-                        movies.get(0).id()
-                );
+
                 try {
                     return MessageFactory.movieConfirmation(
                             message.getChatId(),
-                            movies.get(0).image());
+                            movies.get(0),
+                            1
+                    );
                 } catch (Exception e) {
                     return MessageFactory.gotIt(message.getChatId());
                 }

@@ -54,6 +54,7 @@ public class MovieJdbcRepository {
         return jdbcTemplate.queryForObject(select, namedParameters, Integer.class);
     }
 
+
     public void saveMovieToWatchList(Long chatId, String movieId) {
         String saveQuery =
                 "insert into chat_movie_list (chat_id, movie_id)" +
@@ -73,7 +74,8 @@ public class MovieJdbcRepository {
         String query = "select * from movies " +
                 "left join chat_movie_list on movies.id = chat_movie_list.movie_id" +
                 " where chat_movie_list.chat_id = :chat_id" +
-                " and chat_movie_list.recently_picked = false";
+                " and chat_movie_list.recently_picked = false" +
+                " and chat_movie_list.watched = false";
 
         return jdbcTemplate.query(
                 query,
@@ -112,6 +114,44 @@ public class MovieJdbcRepository {
         jdbcTemplate.update(
                 query,
                 new MapSqlParameterSource("chat_id", chatId)
+        );
+    }
+
+    public void markMovieWatched(Long chatId, String movieId) {
+        String query = "update chat_movie_list" +
+                " set watched = true" +
+                " where chat_movie_list.chat_id = :chat_id" +
+                " and chat_movie_list.movie_id = :movie_id";
+
+        var namedParameters = new MapSqlParameterSource(
+                Map.of(
+                        "chat_id", chatId,
+                        "movie_id", movieId
+                )
+        );
+
+        jdbcTemplate.update(
+                query,
+                namedParameters
+        );
+    }
+
+    public void markMovieUnWatched(Long chatId, String movieId) {
+        String query = "update chat_movie_list" +
+                " set watched = false" +
+                " where chat_movie_list.chat_id = :chat_id" +
+                " and chat_movie_list.movie_id = :movie_id";
+
+        var namedParameters = new MapSqlParameterSource(
+                Map.of(
+                        "chat_id", chatId,
+                        "movie_id", movieId
+                )
+        );
+
+        jdbcTemplate.update(
+                query,
+                namedParameters
         );
     }
 }

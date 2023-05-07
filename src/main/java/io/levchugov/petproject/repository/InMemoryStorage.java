@@ -11,8 +11,6 @@ import java.util.concurrent.ConcurrentHashMap;
 public class InMemoryStorage {
 
     public static final Map<Long, Boolean> AWAITS_TITLE = new ConcurrentHashMap<>();
-    public static final Map<Long, String> MOVIES_AWAITS_CONFIRMATION = new ConcurrentHashMap<>();
     public static final Map<Long, List<SearchMovieResult>> RESPONSE_FROM_IMDB = new ConcurrentHashMap<>();
-    public static final Map<Long, Integer> NO_COUNTER = new ConcurrentHashMap<>();
 
 }
