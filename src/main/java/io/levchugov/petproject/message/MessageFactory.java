@@ -43,7 +43,7 @@ public class MessageFactory {
     public static SendMessage enterName(Long chatId) {
         var sendMessage = new SendMessage();
         sendMessage.setText(
-                "Text me the movie title"
+                "Text me the movie title or send me a voice"
         );
         sendMessage.setChatId(chatId);
         return sendMessage;

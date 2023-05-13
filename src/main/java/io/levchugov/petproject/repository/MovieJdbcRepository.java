@@ -154,4 +154,15 @@ public class MovieJdbcRepository {
                 namedParameters
         );
     }
+
+    public List<Long> findAllChatIds() {
+        String query = "select distinct chat_id from chat_movie_list";
+
+        return jdbcTemplate.query(
+                query,
+                (rs, rowNum) ->
+                        rs.getLong("chat_id")
+        );
+
+    }
 }
