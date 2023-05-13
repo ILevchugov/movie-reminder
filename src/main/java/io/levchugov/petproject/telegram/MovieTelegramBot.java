@@ -42,7 +42,8 @@ public class MovieTelegramBot extends TelegramLongPollingBot {
         try {
             log.info("received update {}", update.getMessage());
             log.info("received callback {}", update.getCallbackQuery());
-            var handleResult = botUpdateHandler.handle(update);
+
+            var handleResult = botUpdateHandler.handle(update, this);
             var forExecution = safeCast(handleResult, BotApiMethod.class);
             if (forExecution != null) {
                 execute(forExecution);

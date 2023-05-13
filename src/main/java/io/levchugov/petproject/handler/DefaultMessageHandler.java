@@ -1,15 +1,20 @@
 package io.levchugov.petproject.handler;
 
 import io.levchugov.petproject.client.ImdbApiClient;
+import io.levchugov.petproject.client.TextRecognitionClient;
 import io.levchugov.petproject.message.MessageFactory;
 import io.levchugov.petproject.model.Movie;
 import io.levchugov.petproject.repository.MovieJdbcRepository;
+import io.levchugov.petproject.telegram.MovieTelegramBot;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.methods.GetFile;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.api.objects.Voice;
 
+import java.io.File;
 import java.io.Serializable;
 
 import static io.levchugov.petproject.repository.InMemoryStorage.AWAITS_TITLE;
@@ -22,11 +27,21 @@ public class DefaultMessageHandler implements MessageHandler {
 
     private final MovieJdbcRepository movieJdbcRepository;
     private final ImdbApiClient imdbApiClient;
+    private final TextRecognitionClient textRecognitionClient;
 
     @Override
-    public PartialBotApiMethod<? extends Serializable> handle(Message message) {
+    public PartialBotApiMethod<? extends Serializable> handle(Message message, MovieTelegramBot movieTelegramBot) {
         if (AWAITS_TITLE.get(message.getChatId()) != null && AWAITS_TITLE.get(message.getChatId())) {
-            var response = imdbApiClient.findMovie(message.getText());
+            String title;
+            if (message.getVoice() != null) {
+                title = processVoice(message.getVoice(), movieTelegramBot);
+                if (title == null) {
+                    return MessageFactory.defaultMessage(message.getChatId());
+                }
+            } else {
+                title = message.getText();
+            }
+            var response = imdbApiClient.findMovie(title);
             RESPONSE_FROM_IMDB.put(message.getChatId(), response.results());
             var movies = response.results();
 
@@ -60,6 +75,27 @@ public class DefaultMessageHandler implements MessageHandler {
             }
         } else {
             return MessageFactory.greeting(message.getChatId());
+        }
+    }
+
+    private String processVoice(Voice voice, MovieTelegramBot movieTelegramBot) {
+        try {
+            var fileId = voice.getFileId();
+
+            GetFile getFile = new GetFile();
+            getFile.setFileId(fileId);
+            String filePath = movieTelegramBot.execute(getFile).getFilePath();
+            File inputAudio = movieTelegramBot.downloadFile(filePath);
+            log.info("file {}", inputAudio.getName());
+
+
+            var result = textRecognitionClient.recognize(inputAudio);
+            log.info("Result: {}", result);
+
+            return result;
+        } catch (Exception e) {
+            log.error("Error while recognition: ", e);
+            return null;
         }
     }
 }

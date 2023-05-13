@@ -1,5 +1,6 @@
 package io.levchugov.petproject.config;
 
+import okhttp3.OkHttpClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
@@ -14,6 +15,12 @@ public class Config {
         factory.setConnectTimeout(10000);
         factory.setReadTimeout(10000);
         return new RestTemplate(factory);
+    }
+
+    @Bean
+    public OkHttpClient okHttpClient() {
+        return new OkHttpClient().newBuilder()
+                .build();
     }
 
 }
