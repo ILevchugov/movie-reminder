@@ -165,4 +165,44 @@ public class MovieJdbcRepository {
         );
 
     }
+
+    public List<Movie> findAllMoviesSeparatedBySizedPages(Long chatId, int page, int numberOfUnitInOnePage) {
+        int offsetUnits = page * numberOfUnitInOnePage;
+
+        String query = "select distinct * from movies " +
+                "left join chat_movie_list on movies.id = chat_movie_list.movie_id " +
+                "where chat_movie_list.chat_id = :chat_id " +
+                "order by movies.id " +
+                "offset :offset_units " +
+                "fetch first :number_of_unit_in_one_page rows only";
+
+        return jdbcTemplate.query(
+                query,
+                new MapSqlParameterSource(
+                        Map.of(
+                                "chat_id", chatId,
+                                "offset_units", offsetUnits,
+                                "number_of_unit_in_one_page", numberOfUnitInOnePage
+                        )
+                ),
+                (rs, rowNum) ->
+                        new Movie(
+                                rs.getString("id"),
+                                rs.getString("title"),
+                                rs.getString("image"),
+                                rs.getString("description")
+                        ));
+    }
+
+    public Integer calculateSizeOfMovieCatalogueByChatId(Long chatId) {
+        String select =
+                "select count(*) from chat_movie_list " +
+                        "where chat_movie_list.chat_id = :chat_id";
+
+
+        return jdbcTemplate.queryForObject(select,
+                new MapSqlParameterSource("chat_id", chatId),
+                Integer.class
+        );
+    }
 }
