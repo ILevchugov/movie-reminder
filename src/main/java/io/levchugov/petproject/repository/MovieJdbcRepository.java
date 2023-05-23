@@ -211,7 +211,49 @@ public class MovieJdbcRepository {
                 "order by movies.id";
 
         return jdbcTemplate.query(
-                query, (rs, rowNum) ->
+                query,
+                (rs, rowNum) ->
+                        new Movie(
+                                rs.getString("id"),
+                                rs.getString("title"),
+                                rs.getString("image"),
+                                rs.getString("description")
+                        ));
+    }
+
+    public List<Movie> findMovieByTitle(String title) {
+        String query = "select distinct * from movies " +
+                "where movies.title = :title";
+
+        return jdbcTemplate.query(
+                query,
+                new MapSqlParameterSource("title", title),
+                (rs, rowNum) ->
+                        new Movie(
+                                rs.getString("id"),
+                                rs.getString("title"),
+                                rs.getString("image"),
+                                rs.getString("description")
+                        ));
+    }
+
+    public List<Movie> findMovieOfUserByTitle(String title, Long chatId) {
+        String query = "select distinct * from movies " +
+                "left join chat_movie_list on movies.id = chat_movie_list.movie_id " +
+                "where chat_movie_list.chat_id = :chat_id " +
+                "and movies.title = :title";
+
+        var namedParameters = new MapSqlParameterSource(
+                Map.of(
+                        "title", title,
+                        "chat_id", chatId
+                )
+        );
+
+        return jdbcTemplate.query(
+                query,
+                namedParameters,
+                (rs, rowNum) ->
                         new Movie(
                                 rs.getString("id"),
                                 rs.getString("title"),

@@ -17,11 +17,12 @@ public class MovieController {
 
     @GetMapping("/movies")
     public ResponseEntity<List<Movie>> getMovieList(
+            @RequestParam(value = "q", required = false) String title,
             @RequestParam(value = "chatId", required = false) Long chatId,
             @RequestParam(value = "unitsOnPage", defaultValue = "100", required = false) int unitsOnPage,
             @RequestParam(value = "size", defaultValue = "0", required = false) int size
     ) {
-        return ResponseEntity.ok(movieService.getMoviesByPagination(chatId, unitsOnPage, size));
+        return ResponseEntity.ok(movieService.getMoviesByPagination(title, chatId, unitsOnPage, size));
 
     }
 
