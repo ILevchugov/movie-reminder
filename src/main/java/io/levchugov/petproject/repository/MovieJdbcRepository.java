@@ -166,8 +166,8 @@ public class MovieJdbcRepository {
 
     }
 
-    public List<Movie> findAllMoviesSeparatedBySizedPages(Long chatId, int page, int numberOfUnitInOnePage) {
-        int offsetUnits = page * numberOfUnitInOnePage;
+    public List<Movie> findAllMoviesSeparatedBySizedPages(Long chatId, int numberOfUnitInOnePage, int size) {
+        int offsetUnits = size * numberOfUnitInOnePage;
 
         String query = "select distinct * from movies " +
                 "left join chat_movie_list on movies.id = chat_movie_list.movie_id " +
@@ -204,5 +204,19 @@ public class MovieJdbcRepository {
                 new MapSqlParameterSource("chat_id", chatId),
                 Integer.class
         );
+    }
+
+    public List<Movie> findAllSavedMovieInDB() {
+        String query = "select distinct * from movies " +
+                "order by movies.id";
+
+        return jdbcTemplate.query(
+                query, (rs, rowNum) ->
+                        new Movie(
+                                rs.getString("id"),
+                                rs.getString("title"),
+                                rs.getString("image"),
+                                rs.getString("description")
+                        ));
     }
 }

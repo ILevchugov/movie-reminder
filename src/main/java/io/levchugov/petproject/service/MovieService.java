@@ -8,5 +8,5 @@ import java.util.List;
 @Service
 public interface MovieService {
 
-    List<Movie> getMoviesByPagination(Long chatId, int page, int numberOfUnitInOnePage);
+    List<Movie> getMoviesByPagination(Long chatId, int numberOfUnitInOnePage, int size);
 }
