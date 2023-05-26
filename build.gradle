@@ -28,6 +28,7 @@ dependencies {
 	implementation 'org.flywaydb:flyway-core:9.17.0'
 	implementation 'org.apache.httpcomponents:httpclient:4.5.14'
 	implementation 'com.squareup.okhttp3:okhttp:4.10.0'
+	implementation 'org.postgresql:postgresql:42.3.3'
 
 
 	implementation group: 'org.telegram', name: 'telegrambots-spring-boot-starter', version: '6.1.0'
@@ -37,7 +38,13 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 
 	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
+	testImplementation 'org.mockito:mockito-core:3.10.0'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.testcontainers:postgresql:1.16.3'
+
+	testCompileOnly 'org.projectlombok:lombok'
+	testAnnotationProcessor 'org.projectlombok:lombok'
+
 }
 
 tasks.named('test') {
