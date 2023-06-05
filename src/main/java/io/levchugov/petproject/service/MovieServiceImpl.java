@@ -17,7 +17,7 @@ public class MovieServiceImpl implements MovieService {
     @Override
     public List<Movie> getMoviesByPagination(String title, Long chatId, int size, int page) {
         if (chatId == null && title == null) {
-            return movieJdbcRepository.findAllSavedMovieInDB();
+            return movieJdbcRepository.findAllSavedMovieInDB(size, page);
         }
         if (chatId == null) {
             return movieJdbcRepository.findMovieByTitle(title);

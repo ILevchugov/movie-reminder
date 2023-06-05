@@ -41,16 +41,16 @@ class MovieServiceImplTest {
     @Test
     void testFirstCondition() {
         Mockito.when(movieJdbcRepository
-                .findAllSavedMovieInDB())
+                .findAllSavedMovieInDB(100, 0))
                 .thenReturn(List.of(
                         new Movie("tt1375666", "Inception",
                                 "https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_Ratio0.6757_AL_.jpg",
                                 "2010 Leonardo DiCaprio, Joseph Gordon-Levitt")
                 ));
 
-        List<Movie> movieList = movieService.getMoviesByPagination(null, null, 0, 100);
+        List<Movie> movieList = movieService.getMoviesByPagination(null, null, 100, 0);
         assertEquals(listForCheckFirstAndSecondAndFifthCondition, movieList);
-        Mockito.verify(movieJdbcRepository).findAllSavedMovieInDB();
+        Mockito.verify(movieJdbcRepository).findAllSavedMovieInDB(100, 0);
     }
 
     @Test
@@ -63,7 +63,7 @@ class MovieServiceImplTest {
                                 "2010 Leonardo DiCaprio, Joseph Gordon-Levitt")
                 ));
 
-        List<Movie> movieList = movieService.getMoviesByPagination("Inception", null, 0, 100);
+        List<Movie> movieList = movieService.getMoviesByPagination("Inception", null, 100, 0);
         assertEquals(listForCheckFirstAndSecondAndFifthCondition, movieList);
     }
 
@@ -74,7 +74,7 @@ class MovieServiceImplTest {
                 .thenReturn(List.of(11111L, 222222L));
 
         List<Movie> movieList = new ArrayList<>();
-        assertEquals(movieList, movieService.getMoviesByPagination("Inception", 12342314L, 0, 100));
+        assertEquals(movieList, movieService.getMoviesByPagination("Inception", 12342314L, 100, 0));
 
     }
 
@@ -85,7 +85,7 @@ class MovieServiceImplTest {
                 .thenReturn(Collections.singletonList(277787442L));
 
         Mockito.when(movieJdbcRepository
-                .findAllMoviesSeparatedBySizedPages(277787442L, 0, 100))
+                .findAllMoviesSeparatedBySizedPages(277787442L, 100, 0))
                 .thenReturn(List.of(
                         new Movie("tt1375666", "Inception",
                                 "https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_Ratio0.6757_AL_.jpg",
@@ -95,7 +95,7 @@ class MovieServiceImplTest {
                                 "2019 Brie Larson, Samuel L. Jackson")
 
                 ));
-        List<Movie> movieList = movieService.getMoviesByPagination(null, 277787442L, 0, 100);
+        List<Movie> movieList = movieService.getMoviesByPagination(null, 277787442L, 100, 0);
         assertEquals(listForCheckFourthCondition, movieList);
 
     }
@@ -113,7 +113,7 @@ class MovieServiceImplTest {
                                 "2010 Leonardo DiCaprio, Joseph Gordon-Levitt")
                 ));
 
-        List<Movie> movieList = movieService.getMoviesByPagination("Inception", 277787442L, 0 ,100);
+        List<Movie> movieList = movieService.getMoviesByPagination("Inception", 277787442L, 100, 0);
         assertEquals(listForCheckFirstAndSecondAndFifthCondition, movieList);
     }
 

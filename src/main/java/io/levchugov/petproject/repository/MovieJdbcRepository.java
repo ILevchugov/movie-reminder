@@ -206,12 +206,22 @@ public class MovieJdbcRepository {
         );
     }
 
-    public List<Movie> findAllSavedMovieInDB() {
+    public List<Movie> findAllSavedMovieInDB(int size, int page) {
+        int offsetUnits = page * size;
+
         String query = "select distinct * from movies " +
-                "order by movies.id";
+                "order by movies.id " +
+                "offset :offset_units " +
+                "fetch first :number_of_unit_in_one_page rows only";
 
         return jdbcTemplate.query(
                 query,
+                new MapSqlParameterSource(
+                        Map.of(
+                                "offset_units", offsetUnits,
+                                "number_of_unit_in_one_page", size
+                        )
+                ),
                 (rs, rowNum) ->
                         new Movie(
                                 rs.getString("id"),
