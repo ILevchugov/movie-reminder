@@ -231,13 +231,23 @@ public class MovieJdbcRepository {
                         ));
     }
 
-    public List<Movie> findMovieByTitle(String title) {
+    public List<Movie> findMovieByTitle(String title, int size, int page) {
+        int offsetUnits = page * size;
+
         String query = "select distinct * from movies " +
-                "where movies.title = :title";
+                "where movies.title = :title " +
+                "offset :offset_units " +
+                "fetch first :number_of_unit_in_one_page rows only";
 
         return jdbcTemplate.query(
                 query,
-                new MapSqlParameterSource("title", title),
+                new MapSqlParameterSource(
+                        Map.of(
+                                "title", title,
+                                "offset_units", offsetUnits,
+                                "number_of_unit_in_one_page", size
+                        )
+                ),
                 (rs, rowNum) ->
                         new Movie(
                                 rs.getString("id"),
@@ -247,16 +257,22 @@ public class MovieJdbcRepository {
                         ));
     }
 
-    public List<Movie> findMovieOfUserByTitle(String title, Long chatId) {
+    public List<Movie> findMovieOfUserByTitle(String title, Long chatId, int size, int page) {
+        int offsetUnits = page * size;
+
         String query = "select distinct * from movies " +
                 "left join chat_movie_list on movies.id = chat_movie_list.movie_id " +
                 "where chat_movie_list.chat_id = :chat_id " +
-                "and movies.title = :title";
+                "and movies.title = :title "+
+                "offset :offset_units " +
+                "fetch first :number_of_unit_in_one_page rows only";
 
         var namedParameters = new MapSqlParameterSource(
                 Map.of(
                         "title", title,
-                        "chat_id", chatId
+                        "chat_id", chatId,
+                        "offset_units", offsetUnits,
+                        "number_of_unit_in_one_page", size
                 )
         );
 

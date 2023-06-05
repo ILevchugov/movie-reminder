@@ -56,7 +56,7 @@ class MovieServiceImplTest {
     @Test
     void testSecondCondition() {
         Mockito.when(movieJdbcRepository
-                        .findMovieByTitle("Inception"))
+                        .findMovieByTitle("Inception", 100, 0))
                 .thenReturn(List.of(
                         new Movie("tt1375666", "Inception",
                                 "https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_Ratio0.6757_AL_.jpg",
@@ -106,7 +106,7 @@ class MovieServiceImplTest {
                         .findAllChatIds())
                 .thenReturn(Collections.singletonList(277787442L));
         Mockito.when(movieJdbcRepository
-                .findMovieOfUserByTitle("Inception", 277787442L))
+                .findMovieOfUserByTitle("Inception", 277787442L, 100, 0))
                 .thenReturn(List.of(
                         new Movie("tt1375666", "Inception",
                                 "https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_Ratio0.6757_AL_.jpg",

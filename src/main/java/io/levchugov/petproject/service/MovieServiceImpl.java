@@ -20,7 +20,7 @@ public class MovieServiceImpl implements MovieService {
             return movieJdbcRepository.findAllSavedMovieInDB(size, page);
         }
         if (chatId == null) {
-            return movieJdbcRepository.findMovieByTitle(title);
+            return movieJdbcRepository.findMovieByTitle(title ,size, page);
         }
         if (!movieJdbcRepository.findAllChatIds().contains(chatId)) {
             return new ArrayList<>();
@@ -28,6 +28,6 @@ public class MovieServiceImpl implements MovieService {
         if (title == null) {
             return movieJdbcRepository.findAllMoviesSeparatedBySizedPages(chatId, size, page);
         }
-        return movieJdbcRepository.findMovieOfUserByTitle(title, chatId);
+        return movieJdbcRepository.findMovieOfUserByTitle(title, chatId, size, page);
     }
 }
