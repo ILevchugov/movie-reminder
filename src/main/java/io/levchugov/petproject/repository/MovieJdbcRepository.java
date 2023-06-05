@@ -166,8 +166,8 @@ public class MovieJdbcRepository {
 
     }
 
-    public List<Movie> findAllMoviesSeparatedBySizedPages(Long chatId, int numberOfUnitInOnePage, int size) {
-        int offsetUnits = size * numberOfUnitInOnePage;
+    public List<Movie> findAllMoviesSeparatedBySizedPages(Long chatId, int size, int page) {
+        int offsetUnits = page * size;
 
         String query = "select distinct * from movies " +
                 "left join chat_movie_list on movies.id = chat_movie_list.movie_id " +
@@ -182,7 +182,7 @@ public class MovieJdbcRepository {
                         Map.of(
                                 "chat_id", chatId,
                                 "offset_units", offsetUnits,
-                                "number_of_unit_in_one_page", numberOfUnitInOnePage
+                                "number_of_unit_in_one_page", size
                         )
                 ),
                 (rs, rowNum) ->

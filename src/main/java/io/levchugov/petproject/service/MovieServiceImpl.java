@@ -15,16 +15,19 @@ public class MovieServiceImpl implements MovieService {
     private final MovieJdbcRepository movieJdbcRepository;
 
     @Override
-    public List<Movie> getMoviesByPagination(String title, Long chatId, int numberOfUnitInOnePage, int size) {
-        if (chatId == null && title == null)
+    public List<Movie> getMoviesByPagination(String title, Long chatId, int size, int page) {
+        if (chatId == null && title == null) {
             return movieJdbcRepository.findAllSavedMovieInDB();
-        else if(chatId == null)
+        }
+        if (chatId == null) {
             return movieJdbcRepository.findMovieByTitle(title);
-        else if (!movieJdbcRepository.findAllChatIds().contains(chatId))
+        }
+        if (!movieJdbcRepository.findAllChatIds().contains(chatId)) {
             return new ArrayList<>();
-        else if (title == null)
-            return movieJdbcRepository.findAllMoviesSeparatedBySizedPages(chatId, numberOfUnitInOnePage, size);
-        else
-            return movieJdbcRepository.findMovieOfUserByTitle(title, chatId);
+        }
+        if (title == null) {
+            return movieJdbcRepository.findAllMoviesSeparatedBySizedPages(chatId, size, page);
+        }
+        return movieJdbcRepository.findMovieOfUserByTitle(title, chatId);
     }
 }

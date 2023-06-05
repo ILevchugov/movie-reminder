@@ -2,10 +2,12 @@ package io.levchugov.petproject.service;
 
 import io.levchugov.petproject.model.Movie;
 import io.levchugov.petproject.repository.MovieJdbcRepository;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -15,16 +17,17 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(SpringExtension.class)
+@SpringBootTest
 class MovieServiceImplTest {
     @MockBean
     private MovieJdbcRepository movieJdbcRepository;
+    @Autowired
     private MovieService movieService;
-    private final List<Movie> listForCheckFirstAndSecondAndFifthCondition = new ArrayList<>();
-    private final List<Movie> listForCheckFourthCondition = new ArrayList<>();
+    private static final List<Movie> listForCheckFirstAndSecondAndFifthCondition = new ArrayList<>();
+    private static final List<Movie> listForCheckFourthCondition = new ArrayList<>();
 
-    @BeforeEach()
-    public void init() {
-        movieService = new MovieServiceImpl(movieJdbcRepository);
+    @BeforeAll()
+    public static void init() {
         listForCheckFirstAndSecondAndFifthCondition.add(new Movie("tt1375666", "Inception", "https://m.media-amazon.com/images/M/MV5BMjAxMzY3NjcxNF5BMl5BanBnXkFtZTcwNTI5OTM0Mw@@._V1_Ratio0.6757_AL_.jpg", "2010 Leonardo DiCaprio, Joseph Gordon-Levitt"));
         listForCheckFourthCondition.addAll(List.of(
                 new Movie("tt1375666", "Inception",
@@ -47,6 +50,7 @@ class MovieServiceImplTest {
 
         List<Movie> movieList = movieService.getMoviesByPagination(null, null, 0, 100);
         assertEquals(listForCheckFirstAndSecondAndFifthCondition, movieList);
+        Mockito.verify(movieJdbcRepository).findAllSavedMovieInDB();
     }
 
     @Test
