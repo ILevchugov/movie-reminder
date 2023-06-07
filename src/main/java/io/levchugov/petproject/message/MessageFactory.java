@@ -1,6 +1,7 @@
 package io.levchugov.petproject.message;
 
 import io.levchugov.petproject.client.model.imdb.SearchMovieResult;
+import io.levchugov.petproject.handler.strategy.CallbackData;
 import io.levchugov.petproject.model.Movie;
 import lombok.experimental.UtilityClass;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
@@ -79,15 +80,15 @@ public class MessageFactory {
                 List.of(
                         InlineKeyboardButton.builder()
                                 .text("Yes")
-                                .callbackData("confirm_movie_" + movie.id())
+                                .callbackData(CallbackData.CONFIRM_MOVIE.getExplanation() + "_" + movie.id())
                                 .build(),
                         InlineKeyboardButton.builder()
                                 .text("No")
-                                .callbackData("show_next_movie_" + counter)
+                                .callbackData(CallbackData.SHOW_NEXT_MOVIE.getExplanation() + "_" + counter.toString())
                                 .build(),
                         InlineKeyboardButton.builder()
                                 .text("Cancel")
-                                .callbackData("cancel")
+                                .callbackData(CallbackData.CANCEL.getExplanation())
                                 .build()
                 )
         );
@@ -149,11 +150,11 @@ public class MessageFactory {
                 List.of(
                         InlineKeyboardButton.builder()
                                 .text("Add")
-                                .callbackData("add_movie")
+                                .callbackData(CallbackData.ADD_MOVIE.getExplanation())
                                 .build(),
                         InlineKeyboardButton.builder()
                                 .text("Pick")
-                                .callbackData("roll_movie")
+                                .callbackData(CallbackData.ROLL_MOVIE.getExplanation())
                                 .build()
                 )
         );
@@ -168,7 +169,7 @@ public class MessageFactory {
                 List.of(
                         InlineKeyboardButton.builder()
                                 .text("Add")
-                                .callbackData("add_movie")
+                                .callbackData(CallbackData.ADD_MOVIE.getExplanation())
                                 .build()
                 )
         );
@@ -183,18 +184,18 @@ public class MessageFactory {
                 List.of(
                         InlineKeyboardButton.builder()
                                 .text("Add")
-                                .callbackData("add_movie")
+                                .callbackData(CallbackData.ADD_MOVIE.getExplanation())
                                 .build(),
                         InlineKeyboardButton.builder()
                                 .text("Pick")
-                                .callbackData("roll_movie")
+                                .callbackData(CallbackData.ROLL_MOVIE.getExplanation())
                                 .build()
                 )
         );
         rowList.add(List.of(
                 InlineKeyboardButton.builder()
                         .text("Watched")
-                        .callbackData("watched_movie_" + movie.id())
+                        .callbackData(CallbackData.WATCHED_MOVIE.getExplanation() + "_" + movie.id())
                         .build()
         ));
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
