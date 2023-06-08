@@ -5,7 +5,7 @@ import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 
 import java.io.Serializable;
 
-public interface Strategy {
+public interface CallBackProcessStrategy {
 
     PartialBotApiMethod<? extends Serializable> invoke(CallbackQuery callback);
 

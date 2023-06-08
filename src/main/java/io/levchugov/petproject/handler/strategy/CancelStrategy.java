@@ -1,12 +1,14 @@
 package io.levchugov.petproject.handler.strategy;
 
 import io.levchugov.petproject.message.MessageFactory;
+import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 
 import java.io.Serializable;
 
-public class CancelStrategy implements Strategy {
+@Component
+public class CancelStrategy implements CallBackProcessStrategy {
 
 
     @Override

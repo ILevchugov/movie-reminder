@@ -1,5 +1,10 @@
 package io.levchugov.petproject.handler.strategy;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+@Getter
+@RequiredArgsConstructor
 public enum CallbackData {
     ADD_MOVIE("add_movie"),
     ROLL_MOVIE("roll_movie"),
@@ -10,12 +15,4 @@ public enum CallbackData {
     DEFAULT_CALLBACK("default_callback");
 
     private final String explanation;
-
-    CallbackData(String explanation) {
-        this.explanation = explanation;
-    }
-
-    public String getExplanation() {
-        return explanation;
-    }
 }

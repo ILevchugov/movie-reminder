@@ -3,13 +3,15 @@ package io.levchugov.petproject.handler.strategy;
 import io.levchugov.petproject.message.MessageFactory;
 import io.levchugov.petproject.repository.MovieJdbcRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 
 import java.io.Serializable;
 
 @RequiredArgsConstructor
-public class ConfirmMovieStrategy implements Strategy {
+@Component
+public class ConfirmMovieStrategy implements CallBackProcessStrategy {
 
     private final MovieJdbcRepository movieJdbcRepository;
 

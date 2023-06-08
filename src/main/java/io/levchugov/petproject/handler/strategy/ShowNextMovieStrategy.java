@@ -4,6 +4,7 @@ import io.levchugov.petproject.message.MessageFactory;
 import io.levchugov.petproject.model.Movie;
 import io.levchugov.petproject.repository.MovieJdbcRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 
@@ -13,7 +14,8 @@ import static io.levchugov.petproject.repository.InMemoryStorage.AWAITS_TITLE;
 import static io.levchugov.petproject.repository.InMemoryStorage.RESPONSE_FROM_IMDB;
 
 @RequiredArgsConstructor
-public class ShowNextMovieStrategy implements Strategy {
+@Component
+public class ShowNextMovieStrategy implements CallBackProcessStrategy {
 
     private final MovieJdbcRepository movieJdbcRepository;
 

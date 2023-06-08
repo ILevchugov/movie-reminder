@@ -4,6 +4,7 @@ import io.levchugov.petproject.message.MessageFactory;
 import io.levchugov.petproject.model.Movie;
 import io.levchugov.petproject.repository.MovieJdbcRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
@@ -14,7 +15,8 @@ import java.util.Random;
 import static io.levchugov.petproject.repository.InMemoryStorage.AWAITS_TITLE;
 
 @RequiredArgsConstructor
-public class WatchedMovieStrategy implements Strategy {
+@Component
+public class WatchedMovieStrategy implements CallBackProcessStrategy {
 
     private static final Random random = new Random();
 

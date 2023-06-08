@@ -1,7 +1,7 @@
 package io.levchugov.petproject.handler;
 
 import io.levchugov.petproject.handler.strategy.CallbackData;
-import io.levchugov.petproject.handler.strategy.Strategy;
+import io.levchugov.petproject.handler.strategy.CallBackProcessStrategy;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class DefaultCallbackHandler implements CallbackHandler {
 
-    private final Map<CallbackData, Strategy> strategyMap;
+    private final Map<CallbackData, CallBackProcessStrategy> strategyMap;
 
 
     @Override
@@ -28,6 +28,7 @@ public class DefaultCallbackHandler implements CallbackHandler {
     private CallbackData getCallbackDataFromItsStringValue(CallbackQuery callback) {
         Map<String, CallbackData> stringCallbackDataMap = strategyMap.keySet().stream()
                 .collect(Collectors.toMap(CallbackData::getExplanation, Function.identity()));
+
         String[] datas = callback.getData().split("_");
         String data = "";
         if (datas.length == 3 || datas.length == 2) {
